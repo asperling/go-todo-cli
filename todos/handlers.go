@@ -1,6 +1,8 @@
+//nolint:forbidigo // This is a CLI tool, so using fmt.Println is acceptable here
 package todos
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -23,7 +25,7 @@ func List(todos []Todo) {
 
 func Add(todos *[]Todo, task string) error {
 	if task == "" {
-		return fmt.Errorf("Task cannot be empty")
+		return errors.New("task cannot be empty")
 	}
 	todo := Todo{ID: uuid.New(), Task: task, Completed: false}
 	*todos = append(*todos, todo)
@@ -32,7 +34,7 @@ func Add(todos *[]Todo, task string) error {
 
 func Delete(todos *[]Todo, taskNumber int) error {
 	if taskNumber < 1 || taskNumber > len(*todos) {
-		return fmt.Errorf("Invalid task number")
+		return errors.New("invalid task number")
 	}
 	*todos = append((*todos)[:taskNumber-1], (*todos)[taskNumber:]...)
 	return nil
@@ -40,7 +42,7 @@ func Delete(todos *[]Todo, taskNumber int) error {
 
 func Move(todos *[]Todo, from, to int) error {
 	if from < 1 || from > len(*todos) || to < 1 || to > len(*todos) || from == to {
-		return fmt.Errorf("Invalid positions for moving todo")
+		return errors.New("invalid positions for moving todo")
 	}
 	item := (*todos)[from-1]
 	*todos = append((*todos)[:from-1], (*todos)[from:]...)
@@ -54,7 +56,7 @@ func Move(todos *[]Todo, from, to int) error {
 
 func Done(todos *[]Todo, taskNumber int, done bool) error {
 	if taskNumber < 1 || taskNumber > len(*todos) {
-		return fmt.Errorf("Invalid task number")
+		return errors.New("invalid task number")
 	}
 	(*todos)[taskNumber-1].Completed = done
 	return nil

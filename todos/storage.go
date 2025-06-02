@@ -3,38 +3,41 @@ package todos
 import (
 	"encoding/json"
 	"os"
+	"path/filepath"
 )
 
-var todoFile = func() string {
-	const fileName = ".aws-todos.json"
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return fileName
-	}
-	return homeDir + "/" + fileName
+type Storage struct {
+	FilePath string
 }
 
-func Load() ([]Todo, error) {
-	if _, err := os.Stat(todoFile()); os.IsNotExist(err) {
+func DefaultStorage() Storage {
+	home, err := os.UserHomeDir()
+	const filename = ".aws-todos.json"
+	if err != nil {
+		return Storage{FilePath: filename}
+	}
+	return Storage{FilePath: filepath.Join(home, filename)}
+}
+
+func (s Storage) Load() ([]Todo, error) {
+	if _, err := os.Stat(s.FilePath); os.IsNotExist(err) {
 		return []Todo{}, nil
 	}
-
-	data, err := os.ReadFile(todoFile())
+	data, err := os.ReadFile(s.FilePath)
 	if err != nil {
 		return nil, err
 	}
-
 	var todos []Todo
-	err = json.Unmarshal(data, &todos)
-
-	return todos, err
+	if unserializeErr := json.Unmarshal(data, &todos); unserializeErr != nil {
+		return nil, unserializeErr
+	}
+	return todos, nil
 }
 
-func Save(todos []Todo) error {
+func (s Storage) Save(todos []Todo) error {
 	data, err := json.MarshalIndent(todos, "", "  ")
 	if err != nil {
 		return err
 	}
-
-	return os.WriteFile(todoFile(), data, 0o644)
+	return os.WriteFile(s.FilePath, data, 0o600)
 }
