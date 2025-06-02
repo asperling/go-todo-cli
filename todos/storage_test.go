@@ -1,30 +1,25 @@
-package todos
+package todos_test
 
 import (
 	"os"
 	"testing"
+
+	"github.com/asperling/go-todo-cli/todos"
 )
 
 func TestSaveAndLoad(t *testing.T) {
-	tmp := t.TempDir()
-	tmpFile := tmp + "/test-todos.json"
+	storage := todos.Storage{FilePath: t.TempDir() + "test.json"}
 
-	origTodoFile := todoFile
-	todoFile = func() string {
-		return tmpFile
-	}
-	defer func() { todoFile = origTodoFile }()
-
-	input := []Todo{
+	input := []todos.Todo{
 		{Task: "Learn Go", Completed: true},
 		{Task: "Write tests", Completed: false},
 	}
 
-	if err := Save(input); err != nil {
+	if err := storage.Save(input); err != nil {
 		t.Fatalf("Save failed: %v", err)
 	}
 
-	output, err := Load()
+	output, err := storage.Load()
 	if err != nil {
 		t.Fatalf("Load failed: %v", err)
 	}
@@ -41,14 +36,9 @@ func TestSaveAndLoad(t *testing.T) {
 }
 
 func TestLoadWhenFileDoesNotExist(t *testing.T) {
-	tmp := t.TempDir()
-	tmpFile := tmp + "/does-not-exist.json"
+	storage := todos.Storage{FilePath: t.TempDir() + "/does-not-exist.json"}
 
-	orig := todoFile
-	todoFile = func() string { return tmpFile }
-	defer func() { todoFile = orig }()
-
-	todos, err := Load()
+	todos, err := storage.Load()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -58,38 +48,27 @@ func TestLoadWhenFileDoesNotExist(t *testing.T) {
 }
 
 func TestLoadWithInvalidJSON(t *testing.T) {
-	tmp := t.TempDir()
-	tmpFile := tmp + "/bad.json"
-
-	if err := os.WriteFile(tmpFile, []byte("not json"), 0o644); err != nil {
+	storage := todos.Storage{FilePath: t.TempDir() + "/bad.json"}
+	if err := os.WriteFile(storage.FilePath, []byte("not json"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-
-	orig := todoFile
-	todoFile = func() string { return tmpFile }
-	defer func() { todoFile = orig }()
-
-	_, err := Load()
+	_, err := storage.Load()
 	if err == nil {
 		t.Fatal("expected error for invalid JSON")
 	}
 }
 
 func TestLoadReadError(t *testing.T) {
-	tmpFile := t.TempDir() + "/no-read-permission.json"
+	storage := todos.Storage{FilePath: t.TempDir() + "/no-read-permission.json"}
 
 	// Datei anlegen und Rechte entziehen
-	err := os.WriteFile(tmpFile, []byte(""), 0o000)
+	err := os.WriteFile(storage.FilePath, []byte(""), 0o000)
 	if err != nil {
 		t.Fatalf("setup failed: %v", err)
 	}
-	defer func() { _ = os.Chmod(tmpFile, 0o644) }()
+	defer func() { _ = os.Chmod(storage.FilePath, 0o644) }()
 
-	orig := todoFile
-	defer func() { todoFile = orig }()
-	todoFile = func() string { return tmpFile }
-
-	_, err = Load()
+	_, err = storage.Load()
 	if err == nil {
 		t.Fatal("expected error from unreadable file, got nil")
 	}

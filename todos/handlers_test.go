@@ -1,13 +1,15 @@
-package todos
+package todos_test
 
 import (
 	"bytes"
 	"os"
 	"testing"
+
+	"github.com/asperling/go-todo-cli/todos"
 )
 
 func TestList(t *testing.T) {
-	todos := []Todo{
+	todoList := []todos.Todo{
 		{Task: "one", Completed: false},
 		{Task: "two", Completed: true},
 	}
@@ -16,12 +18,14 @@ func TestList(t *testing.T) {
 	var buffer bytes.Buffer
 	stdout := os.Stdout
 	r, w, _ := os.Pipe()
+	//nolint:reassign // redirect os.Stdout to the pipe writer
 	os.Stdout = w
 
-	List(todos)
+	todos.List(todoList)
 
 	// close the writer and restore stdout
 	_ = w.Close()
+	//nolint:reassign // restore os.Stdout to its original value
 	os.Stdout = stdout
 	_, _ = buffer.ReadFrom(r)
 	output := buffer.String()
@@ -37,11 +41,13 @@ func TestListEmpty(t *testing.T) {
 	var buf bytes.Buffer
 	stdout := os.Stdout
 	r, w, _ := os.Pipe()
+	//nolint:reassign // redirect os.Stdout to the pipe writer
 	os.Stdout = w
 
-	List([]Todo{})
+	todos.List([]todos.Todo{})
 
 	_ = w.Close()
+	//nolint:reassign // restore os.Stdout to its original value
 	os.Stdout = stdout
 	_, _ = buf.ReadFrom(r)
 	output := buf.String()
@@ -53,10 +59,10 @@ func TestListEmpty(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	todoList := []Todo{}
+	todoList := []todos.Todo{}
 	task := "Test task"
 
-	if err := Add(&todoList, task); err != nil {
+	if err := todos.Add(&todoList, task); err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 
@@ -70,13 +76,13 @@ func TestAdd(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	list := []Todo{
+	list := []todos.Todo{
 		{Task: "eins"},
 		{Task: "zwei"},
 		{Task: "drei"},
 	}
 
-	err := Delete(&list, 2)
+	err := todos.Delete(&list, 2)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -87,8 +93,8 @@ func TestDelete(t *testing.T) {
 }
 
 func TestDeleteInvalid(t *testing.T) {
-	list := []Todo{{Task: "eins"}}
-	err := Delete(&list, 5)
+	list := []todos.Todo{{Task: "eins"}}
+	err := todos.Delete(&list, 5)
 
 	if err == nil {
 		t.Fatal("expected error for invalid delete position")
@@ -96,13 +102,13 @@ func TestDeleteInvalid(t *testing.T) {
 }
 
 func TestMove(t *testing.T) {
-	list := []Todo{
+	list := []todos.Todo{
 		{Task: "eins"},
 		{Task: "zwei"},
 		{Task: "drei"},
 	}
 
-	err := Move(&list, 3, 1)
+	err := todos.Move(&list, 3, 1)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -113,8 +119,8 @@ func TestMove(t *testing.T) {
 }
 
 func TestMoveInvalid(t *testing.T) {
-	list := []Todo{{Task: "eins"}, {Task: "zwei"}}
-	err := Move(&list, 0, 5)
+	list := []todos.Todo{{Task: "eins"}, {Task: "zwei"}}
+	err := todos.Move(&list, 0, 5)
 
 	if err == nil {
 		t.Fatal("expected error for invalid move")
@@ -122,11 +128,11 @@ func TestMoveInvalid(t *testing.T) {
 }
 
 func TestDone(t *testing.T) {
-	list := []Todo{
+	list := []todos.Todo{
 		{Task: "eins", Completed: false},
 	}
 
-	err := Done(&list, 1, true)
+	err := todos.Done(&list, 1, true)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -137,8 +143,8 @@ func TestDone(t *testing.T) {
 }
 
 func TestDoneInvalid(t *testing.T) {
-	list := []Todo{{Task: "eins"}}
-	err := Done(&list, 5, true)
+	list := []todos.Todo{{Task: "eins"}}
+	err := todos.Done(&list, 5, true)
 
 	if err == nil {
 		t.Fatal("expected error for invalid task number")

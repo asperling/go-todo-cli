@@ -7,13 +7,25 @@ import (
 	"github.com/asperling/go-todo-cli/todos"
 )
 
+const (
+	minArgs        = 2
+	addArgs        = 3
+	moveArgs       = 4
+	doneArgs       = 3
+	deleteArgs     = 3
+	argIndexFrom   = 2
+	argIndexTo     = 3
+	argIndexNumber = 2
+)
+
 func Run(args []string) error {
-	if len(args) < 2 {
-		return errors.New("Usage: todo [add|list|done|undone|move|delete] [...]")
+	if len(args) < minArgs {
+		return errors.New("usage: todo [add|list|done|undone|move|delete] [...]")
 	}
 
 	command := args[1]
-	todoList, err := todos.Load()
+	storage := todos.DefaultStorage()
+	todoList, err := storage.Load()
 	if err != nil {
 		return fmt.Errorf("error loading todos: %w", err)
 	}
@@ -22,7 +34,7 @@ func Run(args []string) error {
 	case "add":
 		err = handleAdd(args, &todoList)
 	case "list":
-		err = handleList(&todoList)
+		handleList(&todoList)
 	case "move":
 		err = handleMove(args, &todoList)
 	case "done", "undone":
@@ -38,8 +50,8 @@ func Run(args []string) error {
 	}
 
 	if command != "list" {
-		if err := todos.Save(todoList); err != nil {
-			return err
+		if saveErr := storage.Save(todoList); saveErr != nil {
+			return saveErr
 		}
 		//nolint:forbidigo // Print a success message only for commands that modify the todo list
 		fmt.Println("Todos updated successfully.")
@@ -50,19 +62,18 @@ func Run(args []string) error {
 }
 
 func handleAdd(args []string, todosRef *[]todos.Todo) error {
-	if _, err := ValidateArgs(args, 3, []int{}, "Usage: todo add '[task]'"); err != nil {
+	if _, err := ValidateArgs(args, addArgs, []int{}, "Usage: todo add '[task]'"); err != nil {
 		return err
 	}
 	return todos.Add(todosRef, args[2])
 }
 
-func handleList(todosRef *[]todos.Todo) error {
+func handleList(todosRef *[]todos.Todo) {
 	todos.List(*todosRef)
-	return nil
 }
 
 func handleMove(args []string, todosRef *[]todos.Todo) error {
-	ints, err := ValidateArgs(args, 4, []int{2, 3}, "Usage: todo move [from] [to]")
+	ints, err := ValidateArgs(args, moveArgs, []int{argIndexFrom, argIndexTo}, "Usage: todo move [from] [to]")
 	if err != nil {
 		return err
 	}
@@ -70,7 +81,7 @@ func handleMove(args []string, todosRef *[]todos.Todo) error {
 }
 
 func handleDone(args []string, todosRef *[]todos.Todo, markDone bool) error {
-	ints, err := ValidateArgs(args, 3, []int{2}, "Usage: todo done|undone [task number]")
+	ints, err := ValidateArgs(args, doneArgs, []int{2}, "Usage: todo done|undone [task number]")
 	if err != nil {
 		return err
 	}
@@ -78,7 +89,7 @@ func handleDone(args []string, todosRef *[]todos.Todo, markDone bool) error {
 }
 
 func handleDelete(args []string, todosRef *[]todos.Todo) error {
-	ints, err := ValidateArgs(args, 3, []int{2}, "Usage: todo delete [task number]")
+	ints, err := ValidateArgs(args, deleteArgs, []int{2}, "Usage: todo delete [task number]")
 	if err != nil {
 		return err
 	}
