@@ -1,0 +1,3 @@
+bin/
+vendor/
+.aws-todos.json
