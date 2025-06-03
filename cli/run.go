@@ -53,7 +53,6 @@ func Run(args []string) error {
 		if saveErr := storage.Save(todoList); saveErr != nil {
 			return saveErr
 		}
-		//nolint:forbidigo // Print a success message only for commands that modify the todo list
 		fmt.Println("Todos updated successfully.")
 		todos.List(todoList)
 	}
