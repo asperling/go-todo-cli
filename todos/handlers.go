@@ -9,7 +9,7 @@ import (
 
 func List(todos []Todo) {
 	if len(todos) == 0 {
-		fmt.Println("No todos found.")
+		fmt.Println("No todos yet! 🎉")
 		return
 	}
 	fmt.Println("Todo List:")

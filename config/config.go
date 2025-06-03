@@ -7,7 +7,7 @@ import (
 )
 
 func Path() string {
-	paths := []string{".aws-todo", "config.json"}
+	paths := []string{FolderName, FileName}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		// fallback: relative path
@@ -29,15 +29,14 @@ func Load() (Config, error) {
 	return config, nil
 }
 
-func Save(config Config) error {
-	path := Path()
-	dir := filepath.Dir(path)
+func (cfg *Config) Save() error {
+	dir := filepath.Dir(Path())
 	if errMkdir := os.MkdirAll(dir, 0o700); errMkdir != nil {
 		return errMkdir
 	}
-	data, err := json.MarshalIndent(config, "", "  ")
+	data, err := json.MarshalIndent(cfg, "", "  ")
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(path, data, 0o600)
+	return os.WriteFile(Path(), data, 0o600)
 }

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/asperling/go-todo-cli/config"
@@ -13,7 +14,7 @@ func Init() error {
 	reader := bufio.NewReader(os.Stdin)
 
 	home, _ := os.UserHomeDir()
-	defaultPath := home + "/.aws-todo"
+	defaultPath := filepath.Join(home, config.FolderName)
 
 	fmt.Printf("Where would you like to store your todos? [%s]: ", defaultPath)
 	input, _ := reader.ReadString('\n')
@@ -38,9 +39,10 @@ func Init() error {
 	}
 
 	configuration := config.Config{
-		StoragePath: input,
+		StoragePath:   input,
+		ActivePackage: config.DefaultPackage,
 	}
-	if errSave := config.Save(configuration); errSave != nil {
+	if errSave := configuration.Save(); errSave != nil {
 		return fmt.Errorf("failed to save config: %w", errSave)
 	}
 	fmt.Printf("✅ Configuration saved to %s\n", config.Path())

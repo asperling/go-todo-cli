@@ -52,7 +52,7 @@ func TestListEmpty(t *testing.T) {
 	_, _ = buf.ReadFrom(r)
 	output := buf.String()
 
-	want := "No todos found.\n"
+	want := "No todos yet! 🎉\n"
 	if output != want {
 		t.Errorf("unexpected output for empty list:\n--- got:\n%q\n--- want:\n%q", output, want)
 	}

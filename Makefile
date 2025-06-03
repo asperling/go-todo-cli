@@ -18,6 +18,10 @@ build:
 test:
 	go test -v -cover ./...
 
+## 🚨 Run lint
+lint:
+	golangci-lint run --timeout 5m
+
 ## 📈 Coverage HTML report
 cover:
 	go test -coverprofile=cover.out ./...
