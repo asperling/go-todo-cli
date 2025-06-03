@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/asperling/go-todo-cli/cli"
+	"github.com/asperling/go-todo-cli/commands"
 )
 
 func main() {
-	if err := cli.Run(os.Args); err != nil {
+	if err := commands.Run(os.Args); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}

@@ -1,4 +1,4 @@
-package cli
+package commands
 
 const (
 	MinArgs           = 2
