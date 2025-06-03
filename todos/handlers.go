@@ -1,4 +1,3 @@
-//nolint:forbidigo // This is a CLI tool, so using fmt.Println is acceptable here
 package todos
 
 import (
