@@ -6,19 +6,22 @@ import (
 	"path/filepath"
 )
 
-func Path() string {
-	paths := []string{FolderName, FileName}
+type Store struct {
+	FilePath string
+}
+
+func DefaultStore() Store {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		// fallback: relative path
-		return filepath.Join(".", filepath.Join(paths...))
+		return Store{FilePath: filepath.Join(".", FolderName, FileName)}
 	}
-	return filepath.Join(append([]string{home}, paths...)...)
+	path := filepath.Join(home, FolderName, FileName)
+	return Store{FilePath: path}
 }
 
-func Load() (Config, error) {
-	path := Path()
-	data, err := os.ReadFile(path)
+func (s Store) Load() (Config, error) {
+	data, err := os.ReadFile(s.FilePath)
 	if err != nil {
 		return Config{}, err
 	}
@@ -29,14 +32,14 @@ func Load() (Config, error) {
 	return config, nil
 }
 
-func (cfg *Config) Save() error {
-	dir := filepath.Dir(Path())
-	if errMkdir := os.MkdirAll(dir, 0o700); errMkdir != nil {
-		return errMkdir
+func (s Store) Save(cfg *Config) error {
+	dir := filepath.Dir(s.FilePath)
+	if err := os.MkdirAll(dir, 0o700); err != nil {
+		return err
 	}
 	data, err := json.MarshalIndent(cfg, "", "  ")
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(Path(), data, 0o600)
+	return os.WriteFile(s.FilePath, data, 0o600)
 }

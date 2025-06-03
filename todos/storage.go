@@ -94,7 +94,8 @@ func (s Storage) DeletePackage(name string) error {
 	// Reset active package if deleted
 	if name == s.Config.ActivePackage {
 		s.Config.ActivePackage = config.DefaultPackage
-		if err := s.Config.Save(); err != nil {
+		configLoader := config.DefaultStore()
+		if err := configLoader.Save(s.Config); err != nil {
 			return err
 		}
 	}
