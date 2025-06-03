@@ -2,13 +2,25 @@ package todos_test
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
+	"github.com/asperling/go-todo-cli/config"
 	"github.com/asperling/go-todo-cli/todos"
 )
 
+func newTestStorage(t *testing.T, packageName string) todos.Storage {
+	t.Helper()
+	return todos.Storage{
+		Config: &config.Config{
+			StoragePath:   t.TempDir(),
+			ActivePackage: packageName,
+		},
+	}
+}
+
 func TestSaveAndLoad(t *testing.T) {
-	storage := todos.Storage{FilePath: t.TempDir() + "test.json"}
+	storage := newTestStorage(t, "test")
 
 	input := []todos.Todo{
 		{Task: "Learn Go", Completed: true},
@@ -36,7 +48,7 @@ func TestSaveAndLoad(t *testing.T) {
 }
 
 func TestLoadWhenFileDoesNotExist(t *testing.T) {
-	storage := todos.Storage{FilePath: t.TempDir() + "/does-not-exist.json"}
+	storage := newTestStorage(t, "missing")
 
 	todos, err := storage.Load()
 	if err != nil {
@@ -48,8 +60,10 @@ func TestLoadWhenFileDoesNotExist(t *testing.T) {
 }
 
 func TestLoadWithInvalidJSON(t *testing.T) {
-	storage := todos.Storage{FilePath: t.TempDir() + "/bad.json"}
-	if err := os.WriteFile(storage.FilePath, []byte("not json"), 0o644); err != nil {
+	storage := newTestStorage(t, "bad")
+	// Create invalid JSON manually
+	path := filepath.Join(storage.Config.StoragePath, storage.Config.ActivePackage+".json")
+	if err := os.WriteFile(path, []byte("not json"), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	_, err := storage.Load()
@@ -59,16 +73,15 @@ func TestLoadWithInvalidJSON(t *testing.T) {
 }
 
 func TestLoadReadError(t *testing.T) {
-	storage := todos.Storage{FilePath: t.TempDir() + "/no-read-permission.json"}
+	storage := newTestStorage(t, "restricted")
 
-	// Datei anlegen und Rechte entziehen
-	err := os.WriteFile(storage.FilePath, []byte(""), 0o000)
-	if err != nil {
+	path := filepath.Join(storage.Config.StoragePath, storage.Config.ActivePackage+".json")
+	if err := os.WriteFile(path, []byte(""), 0o000); err != nil {
 		t.Fatalf("setup failed: %v", err)
 	}
-	defer func() { _ = os.Chmod(storage.FilePath, 0o644) }()
+	defer func() { _ = os.Chmod(path, 0o644) }()
 
-	_, err = storage.Load()
+	_, err := storage.Load()
 	if err == nil {
 		t.Fatal("expected error from unreadable file, got nil")
 	}
