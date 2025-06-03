@@ -4,19 +4,20 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+
+	"github.com/asperling/go-todo-cli/config"
 )
 
 type Storage struct {
 	FilePath string
 }
 
-func DefaultStorage() Storage {
-	home, err := os.UserHomeDir()
-	const filename = ".aws-todos.json"
+func StorageFromConfig() (Storage, error) {
+	configuration, err := config.Load()
 	if err != nil {
-		return Storage{FilePath: filename}
+		return Storage{}, err
 	}
-	return Storage{FilePath: filepath.Join(home, filename)}
+	return Storage{FilePath: filepath.Join(configuration.StoragePath, "todos.json")}, nil
 }
 
 func (s Storage) Load() ([]Todo, error) {

@@ -16,6 +16,7 @@ const (
 	argIndexFrom   = 2
 	argIndexTo     = 3
 	argIndexNumber = 2
+	initCommand    = "init"
 )
 
 func Run(args []string) error {
@@ -24,7 +25,16 @@ func Run(args []string) error {
 	}
 
 	command := args[1]
-	storage := todos.DefaultStorage()
+
+	// Handle init command before the configuration is loaded as it might only be available after initialization.
+	if command == initCommand {
+		return Init()
+	}
+
+	storage, configError := todos.StorageFromConfig()
+	if configError != nil {
+		return fmt.Errorf("error loading storage configuration: %w, did you run `todo init`?", configError)
+	}
 	todoList, err := storage.Load()
 	if err != nil {
 		return fmt.Errorf("error loading todos: %w", err)
@@ -49,7 +59,7 @@ func Run(args []string) error {
 		return err
 	}
 
-	if command != "list" {
+	if command != "list" && command != initCommand {
 		if saveErr := storage.Save(todoList); saveErr != nil {
 			return saveErr
 		}
