@@ -30,7 +30,7 @@ func InitAction(_ *cli.Context, store *config.Store) error {
 	case os.IsNotExist(err):
 		fmt.Println("📁 Directory does not exist – trying to create it…")
 		if errMkdir := os.MkdirAll(input, 0o700); errMkdir != nil {
-			return cli.Exit(fmt.Sprintf("❌ could not create storage directory: %v", err), 1)
+			return cli.Exit(fmt.Sprintf("❌ could not create storage directory: %v", errMkdir), 1)
 		}
 		fmt.Println("✅ Directory created:", input)
 	case err != nil:
