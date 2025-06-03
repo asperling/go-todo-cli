@@ -15,9 +15,10 @@ type Storage struct {
 	Config *config.Config
 }
 
+var validPackageNameRegex = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
+
 func IsValidPackageName(name string) bool {
-	valid := regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
-	return valid.MatchString(name)
+	return validPackageNameRegex.MatchString(name)
 }
 
 func StorageFromConfig(cfg *config.Config) Storage {
