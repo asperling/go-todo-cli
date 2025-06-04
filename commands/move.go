@@ -56,7 +56,7 @@ func MoveCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
 		Name:    "move",
 		Aliases: []string{"mv", "m"},
-		Usage:   "Change the the position of a task in your current package",
+		Usage:   "Change the position of a task in your current package",
 		Action: func(c *cli.Context) error {
 			return MoveAction(c, store)
 		},

@@ -42,7 +42,7 @@ func PackagesDeleteAction(c *cli.Context, store *config.Store) error {
 	if name == cfg.ActivePackage {
 		cfg.ActivePackage = config.DefaultPackage
 		if errSave := store.Save(&cfg); errSave != nil {
-			return cli.Exit(fmt.Sprintf("failed to update active package: %v", errSave), 1)
+			return cli.Exit(fmt.Sprintf("❌ failed to update active package: %v", errSave), 1)
 		}
 	}
 
