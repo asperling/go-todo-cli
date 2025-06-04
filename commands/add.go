@@ -36,14 +36,16 @@ func AddAction(c *cli.Context, store *config.Store) error {
 		return cli.Exit(fmt.Sprintf("❌ Failed to save todos: %v", errSave), 1)
 	}
 
-	fmt.Printf("✅ Added: %s\n", task)
+	fmt.Printf("✔ Added: %s\n", task)
+	PrintList(list, cfg.ActivePackage)
 	return nil
 }
 
 func AddCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:  "add",
-		Usage: "Add a new task to your current package",
+		Name:    "add",
+		Aliases: []string{"a"},
+		Usage:   "Add a new task to your current package",
 		Action: func(c *cli.Context) error {
 			return AddAction(c, store)
 		},

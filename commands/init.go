@@ -47,13 +47,14 @@ func InitAction(_ *cli.Context, store *config.Store) error {
 	if errSave := store.Save(&configuration); errSave != nil {
 		return cli.Exit(fmt.Sprintf("failed to save config: %v", errSave), 1)
 	}
-	fmt.Printf("✅ Configuration saved to %s\n", store.FilePath)
+	fmt.Printf("✔ Configuration saved to %s\n", store.FilePath)
 	return nil
 }
 
 func InitCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
 		Name:        "init",
+		Aliases:     []string{"i"},
 		Usage:       "Initialize the todo CLI configuration",
 		Description: "This command initializes the todo CLI by setting up the storage path for todos.",
 		Action: func(c *cli.Context) error {

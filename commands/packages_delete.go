@@ -12,6 +12,7 @@ import (
 func PackagesDeleteCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
 		Name:      "delete",
+		Aliases:   []string{"del", "rm"},
 		Usage:     "Delete a package",
 		ArgsUsage: "[package name]",
 		Action: func(c *cli.Context) error {
@@ -38,8 +39,9 @@ func PackagesDeleteAction(c *cli.Context, store *config.Store) error {
 	storage := todos.StorageFromConfig(&cfg)
 
 	if errDelete := storage.DeletePackage(name); errDelete != nil {
-		return cli.Exit(fmt.Sprintf("❌ %v", errDelete), 1)
+		return cli.Exit(fmt.Sprintf("❌ could not delete package: %v", errDelete), 1)
 	}
 
+	fmt.Printf("🗑️ Deleted package: %s\n", name)
 	return nil
 }
