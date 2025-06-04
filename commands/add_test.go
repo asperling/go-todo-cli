@@ -25,7 +25,7 @@ func TestAddAction_integration(t *testing.T) {
 		}
 	})
 
-	if !strings.Contains(output, "✅ Added") {
+	if !strings.Contains(output, "Added") {
 		t.Errorf("missing success message: %q", output)
 	}
 

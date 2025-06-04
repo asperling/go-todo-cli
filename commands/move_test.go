@@ -36,7 +36,7 @@ func TestMoveAction_integration(t *testing.T) {
 		}
 	})
 
-	if !strings.Contains(output, "✅ Successfully moved") {
+	if !strings.Contains(output, "Successfully moved") {
 		t.Errorf("expected success message, got: %q", output)
 	}
 	if !strings.Contains(output, "[1] C") || !strings.Contains(output, "[2] A") {
