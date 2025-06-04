@@ -13,9 +13,10 @@ func main() {
 	store := config.DefaultStore()
 
 	app := &cli.App{
-		Name:    "todo",
-		Usage:   "Manage your todos from the command line",
-		Version: "0.1.0",
+		Name:                 "todo",
+		Usage:                "Manage your todos from the command line",
+		Version:              "0.1.0",
+		EnableBashCompletion: true,
 		Commands: []*cli.Command{
 			commands.InitCommand(&store),
 			commands.ListCommand(&store),
@@ -23,6 +24,7 @@ func main() {
 			commands.DeleteCommand(&store),
 			commands.DoneCommand(&store),
 			commands.UndoneCommand(&store),
+			commands.MoveCommand(&store),
 			commands.PackagesCommand(&store),
 		},
 	}
