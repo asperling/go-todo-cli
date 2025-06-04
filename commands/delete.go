@@ -39,14 +39,16 @@ func DeleteAction(c *cli.Context, store *config.Store) error {
 		return cli.Exit(fmt.Sprintf("❌ Failed to save todos: %v", errSave), 1)
 	}
 
-	fmt.Printf("🗑️ Deleted task at index %d\n", index)
+	fmt.Printf("🗑️  Deleted task at index %d\n", index)
+	PrintList(list, cfg.ActivePackage)
 	return nil
 }
 
 func DeleteCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:  "delete",
-		Usage: "Delete a task by its index",
+		Name:    "delete",
+		Aliases: []string{"del", "rm"},
+		Usage:   "Delete a task by its index",
 		Action: func(c *cli.Context) error {
 			return DeleteAction(c, store)
 		},

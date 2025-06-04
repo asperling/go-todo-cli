@@ -39,7 +39,7 @@ func TestInitAction_interactive(t *testing.T) {
 		}
 	})
 
-	if !strings.Contains(output, "✅ Configuration saved") {
+	if !strings.Contains(output, "Configuration saved") {
 		t.Errorf("expected success message, got: %q", output)
 	}
 

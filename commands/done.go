@@ -45,14 +45,16 @@ func DoneAction(c *cli.Context, store *config.Store) error {
 	if !markDone {
 		action = "reopened"
 	}
-	fmt.Printf("✅ Task %d %s.\n", index, action)
+	fmt.Printf("✔ Task %d %s.\n", index, action)
+	PrintList(list, cfg.ActivePackage)
 	return nil
 }
 
 func DoneCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:  "done",
-		Usage: "Mark a task as completed",
+		Name:    "done",
+		Aliases: []string{"d"},
+		Usage:   "Mark a task as completed",
 		Action: func(c *cli.Context) error {
 			return DoneAction(c, store)
 		},
@@ -61,8 +63,9 @@ func DoneCommand(store *config.Store) *cli.Command {
 
 func UndoneCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:  "undone",
-		Usage: "Reopen a completed task",
+		Name:    "undone",
+		Aliases: []string{"u"},
+		Usage:   "Reopen a completed task",
 		Action: func(c *cli.Context) error {
 			return DoneAction(c, store)
 		},

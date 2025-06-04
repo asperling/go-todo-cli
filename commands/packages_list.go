@@ -10,9 +10,10 @@ import (
 
 func PackagesListCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:   "list",
-		Usage:  "List available packages",
-		Action: func(_ *cli.Context) error { return PackagesListAction(store) },
+		Name:    "list",
+		Aliases: []string{"ls", "l"},
+		Usage:   "List available packages",
+		Action:  func(_ *cli.Context) error { return PackagesListAction(store) },
 	}
 }
 

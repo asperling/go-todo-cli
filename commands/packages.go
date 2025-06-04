@@ -14,8 +14,9 @@ func isValidPackageName(name string) bool {
 
 func PackagesCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:  "packages",
-		Usage: "Manage todo packages",
+		Name:    "packages",
+		Usage:   "Manage todo packages",
+		Aliases: []string{"pkg", "p"},
 		Subcommands: []*cli.Command{
 			PackagesListCommand(store),
 			PackagesUseCommand(store),

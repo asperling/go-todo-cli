@@ -11,6 +11,7 @@ import (
 func PackagesUseCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
 		Name:      "use",
+		Aliases:   []string{"u"},
 		Usage:     "Switch to a different package",
 		ArgsUsage: "[package name]",
 		Action: func(c *cli.Context) error {
