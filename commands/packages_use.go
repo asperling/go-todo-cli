@@ -10,10 +10,11 @@ import (
 
 func PackagesUseCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:      "use",
-		Aliases:   []string{"u"},
-		Usage:     "Switch to a different package",
-		ArgsUsage: "[package name]",
+		Name:        "use",
+		Aliases:     []string{"u"},
+		Usage:       "Switch to a different package",
+		Description: "Sets the active package. If the package does not exist, it will be created automatically when adding a new task.",
+		ArgsUsage:   "[package name]",
 		Action: func(c *cli.Context) error {
 			return PackagesUseAction(c, store)
 		},

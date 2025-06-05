@@ -43,9 +43,11 @@ func AddAction(c *cli.Context, store *config.Store) error {
 
 func AddCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:    "add",
-		Aliases: []string{"a"},
-		Usage:   "Add a new task to your current package",
+		Name:        "add",
+		Aliases:     []string{"a"},
+		Usage:       "Add a new task to your current package",
+		Description: "Use this command to add a new task to your current package. You can specify the task description as an argument.",
+		ArgsUsage:   "[task description]",
 		Action: func(c *cli.Context) error {
 			return AddAction(c, store)
 		},

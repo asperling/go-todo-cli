@@ -11,10 +11,11 @@ import (
 
 func PackagesDeleteCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:      "delete",
-		Aliases:   []string{"del", "rm"},
-		Usage:     "Delete a package",
-		ArgsUsage: "[package name]",
+		Name:        "delete",
+		Aliases:     []string{"del", "rm"},
+		Usage:       "Delete a package",
+		Description: "Deletes the specified package file. The default package cannot be deleted.",
+		ArgsUsage:   "[package name]",
 		Action: func(c *cli.Context) error {
 			return PackagesDeleteAction(c, store)
 		},

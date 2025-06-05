@@ -10,10 +10,12 @@ import (
 
 func PackagesListCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:    "list",
-		Aliases: []string{"ls", "l"},
-		Usage:   "List available packages",
-		Action:  func(_ *cli.Context) error { return PackagesListAction(store) },
+		Name:        "list",
+		Aliases:     []string{"ls", "l"},
+		Usage:       "List available packages",
+		Description: "Shows all available packages. The active one is marked.",
+		ArgsUsage:   "",
+		Action:      func(_ *cli.Context) error { return PackagesListAction(store) },
 	}
 }
 

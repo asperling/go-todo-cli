@@ -42,9 +42,11 @@ func ListAction(store *config.Store) error {
 
 func ListCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:    "list",
-		Aliases: []string{"ls", "l"},
-		Usage:   "List all todos in the active package",
+		Name:        "list",
+		Aliases:     []string{"ls", "l"},
+		Usage:       "List all todos in the active package",
+		Description: "Displays all tasks in the currently active package. Completed tasks are shown with a checkmark.",
+		ArgsUsage:   "",
 		Action: func(_ *cli.Context) error {
 			return ListAction(store)
 		},

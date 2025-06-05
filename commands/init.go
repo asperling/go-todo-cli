@@ -56,7 +56,8 @@ func InitCommand(store *config.Store) *cli.Command {
 		Name:        "init",
 		Aliases:     []string{"i"},
 		Usage:       "Initialize the todo CLI configuration",
-		Description: "This command initializes the todo CLI by setting up the storage path for todos.",
+		Description: "This command initializes the todo CLI by setting up the storage path for todos. This is usually the first command you run.",
+		ArgsUsage:   "",
 		Action: func(c *cli.Context) error {
 			return InitAction(c, store)
 		},

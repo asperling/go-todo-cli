@@ -46,9 +46,11 @@ func DeleteAction(c *cli.Context, store *config.Store) error {
 
 func DeleteCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:    "delete",
-		Aliases: []string{"del", "rm"},
-		Usage:   "Delete a task by its index",
+		Name:        "delete",
+		Aliases:     []string{"del", "rm"},
+		Usage:       "Delete a task by its index",
+		Description: "Removes the task at the specified position in your current package.",
+		ArgsUsage:   "[task number]",
 		Action: func(c *cli.Context) error {
 			return DeleteAction(c, store)
 		},

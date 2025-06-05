@@ -52,9 +52,11 @@ func DoneAction(c *cli.Context, store *config.Store) error {
 
 func DoneCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:    "done",
-		Aliases: []string{"d"},
-		Usage:   "Mark a task as completed",
+		Name:        "done",
+		Aliases:     []string{"d"},
+		Usage:       "Mark a task as completed",
+		Description: "Marks the task at the given position as completed.",
+		ArgsUsage:   "[task number]",
 		Action: func(c *cli.Context) error {
 			return DoneAction(c, store)
 		},
@@ -63,9 +65,11 @@ func DoneCommand(store *config.Store) *cli.Command {
 
 func UndoneCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:    "undone",
-		Aliases: []string{"u"},
-		Usage:   "Reopen a completed task",
+		Name:        "undone",
+		Aliases:     []string{"u"},
+		Usage:       "Reopen a completed task",
+		Description: "Marks the task at the given position as not completed.",
+		ArgsUsage:   "[task number]",
 		Action: func(c *cli.Context) error {
 			return DoneAction(c, store)
 		},
