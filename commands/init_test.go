@@ -172,7 +172,7 @@ func TestInitAction_unwritable_directory(t *testing.T) {
 	}
 
 	msg := exitErr.Error()
-	if !strings.Contains(msg, "could not create") && !strings.Contains(msg, "failed to access path") {
+	if !strings.Contains(msg, "Could not create") && !strings.Contains(msg, "Failed to access path") {
 		t.Errorf("expected creation error, got: %s", msg)
 	}
 }

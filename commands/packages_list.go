@@ -10,23 +10,25 @@ import (
 
 func PackagesListCommand(store *config.Store) *cli.Command {
 	return &cli.Command{
-		Name:    "list",
-		Aliases: []string{"ls", "l"},
-		Usage:   "List available packages",
-		Action:  func(_ *cli.Context) error { return PackagesListAction(store) },
+		Name:        "list",
+		Aliases:     []string{"ls", "l"},
+		Usage:       "List available packages",
+		Description: "Shows all available packages. The active one is marked.",
+		ArgsUsage:   "",
+		Action:      func(_ *cli.Context) error { return PackagesListAction(store) },
 	}
 }
 
 func PackagesListAction(store *config.Store) error {
 	cfg, err := store.Load()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌ Failed to load config: %v", err), 1)
+		return Exitf("Failed to load config: %v", err)
 	}
 
 	storage := todos.StorageFromConfig(&cfg)
 	pkgs, active, err := storage.ListPackages()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌ Failed to list packages: %v", err), 1)
+		return Exitf("Failed to list packages: %v", err)
 	}
 
 	fmt.Println("📦 Available packages:")
