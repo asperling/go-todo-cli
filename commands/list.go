@@ -27,13 +27,13 @@ func PrintList(list []todos.Todo, activePackage string) {
 func ListAction(store *config.Store) error {
 	cfg, err := store.Load()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌ failed to load config: %v", err), 1)
+		return Exitf("Failed to load config: %v", err)
 	}
 
 	storage := todos.StorageFromConfig(&cfg)
 	list, err := storage.Load()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌ failed to load todos: %v", err), 1)
+		return Exitf("Failed to load todos: %v", err)
 	}
 
 	PrintList(list, cfg.ActivePackage)

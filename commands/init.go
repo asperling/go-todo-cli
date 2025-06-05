@@ -30,13 +30,13 @@ func InitAction(_ *cli.Context, store *config.Store) error {
 	case os.IsNotExist(err):
 		fmt.Println("📁 Directory does not exist – trying to create it…")
 		if errMkdir := os.MkdirAll(input, 0o700); errMkdir != nil {
-			return cli.Exit(fmt.Sprintf("❌ could not create storage directory: %v", errMkdir), 1)
+			return Exitf("Could not create storage directory: %v", errMkdir)
 		}
-		fmt.Println("✅ Directory created:", input)
+		SuccessPrintf("Directory created: %s", input)
 	case err != nil:
-		return cli.Exit(fmt.Sprintf("❌ failed to access path: %v", err), 1)
+		return Exitf("Failed to access path: %v", err)
 	case !info.IsDir():
-		return cli.Exit(fmt.Sprintf("❌ path exists but is not a directory: %s", input), 1)
+		return Exitf("Path exists but is not a directory: %s", input)
 	}
 
 	configuration := config.Config{
@@ -45,9 +45,9 @@ func InitAction(_ *cli.Context, store *config.Store) error {
 	}
 
 	if errSave := store.Save(&configuration); errSave != nil {
-		return cli.Exit(fmt.Sprintf("failed to save config: %v", errSave), 1)
+		return Exitf("Failed to save config: %v", errSave)
 	}
-	fmt.Printf("✔ Configuration saved to %s\n", store.FilePath)
+	SuccessPrintf("Configuration saved to %s", store.FilePath)
 	return nil
 }
 

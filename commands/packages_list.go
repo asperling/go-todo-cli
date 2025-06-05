@@ -22,13 +22,13 @@ func PackagesListCommand(store *config.Store) *cli.Command {
 func PackagesListAction(store *config.Store) error {
 	cfg, err := store.Load()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌ Failed to load config: %v", err), 1)
+		return Exitf("Failed to load config: %v", err)
 	}
 
 	storage := todos.StorageFromConfig(&cfg)
 	pkgs, active, err := storage.ListPackages()
 	if err != nil {
-		return cli.Exit(fmt.Sprintf("❌ Failed to list packages: %v", err), 1)
+		return Exitf("Failed to list packages: %v", err)
 	}
 
 	fmt.Println("📦 Available packages:")
